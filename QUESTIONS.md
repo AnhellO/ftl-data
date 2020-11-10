@@ -23,3 +23,9 @@ Verified after executing the program in the playground: <https://play.golang.org
 > How would you change the Title field of the b variable?
 
 **Response:** `b.Title = "New Title"`
+
+### Question 2
+
+> Suppose you declare a certain field in a struct (for example, Edition int, representing the edition number of the book), but then you don’t supply a value for that field in your struct literal. What happens? Can you refer to that field of the variable? What value does it have? See if you can guess the answer before trying it out in your program. Try omitting the value for various different field types. What value do they get if you don’t explicitly assign one?
+
+**Response:** We can access to the fields of the struct literal even if no value was assigned to them. This is possible since they will hold the "zero value" for their specific type: <https://tour.golang.org/moretypes/5>
