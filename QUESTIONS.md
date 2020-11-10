@@ -15,3 +15,11 @@ The Happines Project
 ```
 
 Verified after executing the program in the playground: <https://play.golang.org/p/ex4TNiPWNF4>
+
+## Chapter 2 - Structural Engineering
+
+### Question 1
+
+> How would you change the Title field of the b variable?
+
+**Response:** `b.Title = "New Title"`
