@@ -7,9 +7,14 @@ import (
 
 func TestBook(t *testing.T) {
 	_ = bookstore.Book{
-		Title:       "Spark Joy",
-		Author:      "Marie Kondō",
-		Description: "A tiny, cheerful Japanese woman explains tidying.",
-		PriceCents:  1199,
+		Title:           "Ready Player One",
+		Authors:         []string{"Ernest Cline"},
+		Copies:          10,
+		PriceCents:      100,
+		DiscountPercent: 15,
+		Edition:         1,
+		SeriesName:      "Ready Player One",
+		SeriesID:        1,
+		Featured:        true,
 	}
 }
