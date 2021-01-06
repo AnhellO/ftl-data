@@ -51,7 +51,7 @@ func TestNewID(t *testing.T) {
 	}
 }
 
-func TestGetAllBooks(t *testing.T) {
+func TestGetAllMappedBooks(t *testing.T) {
 	book1 := bookstore.Book{
 		ID:              "Book1",
 		Title:           "Ready Player One",
@@ -76,9 +76,9 @@ func TestGetAllBooks(t *testing.T) {
 		Edition:         1,
 		Featured:        true,
 	}
-	bookstore.Catalog = map[string]bookstore.Book{"Book1": book1, "Book2": book2}
+	bookstore.MappedCatalog = map[string]bookstore.Book{"Book1": book1, "Book2": book2}
 	want := map[string]bookstore.Book{"Book1": book1, "Book2": book2}
-	got := bookstore.GetAllBooks()
+	got := bookstore.GetAllMappedBooks()
 
 	if !cmp.Equal(want, got) {
 		t.Error(cmp.Diff(want, got))
@@ -86,7 +86,7 @@ func TestGetAllBooks(t *testing.T) {
 }
 
 func TestAddBookToCatalog(t *testing.T) {
-	bookstore.Catalog = map[string]bookstore.Book{}
+	bookstore.MappedCatalog = map[string]bookstore.Book{}
 	bookstore.Authors = map[string][]string{}
 	book := bookstore.Book{
 		ID:              "Book1",
@@ -103,7 +103,7 @@ func TestAddBookToCatalog(t *testing.T) {
 	}
 	bookstore.AddBookToCatalog(book)
 	want := map[string]bookstore.Book{"Book1": book}
-	got := bookstore.GetAllBooks()
+	got := bookstore.GetAllMappedBooks()
 
 	if !cmp.Equal(want, got) {
 		t.Error(cmp.Diff(want, got))
@@ -111,7 +111,7 @@ func TestAddBookToCatalog(t *testing.T) {
 }
 
 func TestGetBookDetails(t *testing.T) {
-	bookstore.Catalog = map[string]bookstore.Book{}
+	bookstore.MappedCatalog = map[string]bookstore.Book{}
 	bookstore.Authors = map[string][]string{}
 	id := bookstore.NewID(24)
 	book := bookstore.Book{
@@ -158,7 +158,7 @@ func TestGetBookDetails(t *testing.T) {
 }
 
 func TestGetAllByAuthor(t *testing.T) {
-	bookstore.Catalog = map[string]bookstore.Book{}
+	bookstore.MappedCatalog = map[string]bookstore.Book{}
 	bookstore.Authors = map[string][]string{}
 	book1 := bookstore.Book{
 		ID:              bookstore.NewID(24),
@@ -219,7 +219,7 @@ func TestGetAllByAuthor(t *testing.T) {
 }
 
 func TestGetCatalogDetails(t *testing.T) {
-	bookstore.Catalog = map[string]bookstore.Book{}
+	bookstore.MappedCatalog = map[string]bookstore.Book{}
 	bookstore.Authors = map[string][]string{}
 	book1 := bookstore.Book{
 		ID:              "Book1",
@@ -278,5 +278,69 @@ func TestCustomerMailingLabel(t *testing.T) {
 	got := c.MailingLabel()
 	if want != got {
 		t.Errorf("want %s, got %s", want, got)
+	}
+}
+
+func TestCatalogGetAllBooks(t *testing.T) {
+	want := []bookstore.Book{
+		{Title: "Harry Potter and the Philosopher's Stone"},
+		{Title: "Chocolate 2: Fifty Shades of Chocolate"},
+		{Title: "The Catcher in the Pie"},
+	}
+	c := bookstore.Catalog(want)
+	got := c.GetAllBooks()
+	if !cmp.Equal(want, got) {
+		t.Errorf(cmp.Diff(want, got))
+	}
+}
+
+func TestCatalogLen(t *testing.T) {
+	want := 4
+	got := bookstore.Catalog([]bookstore.Book{
+		{Title: "Harry Potter and the Philosopher's Stone"},
+		{Title: "Chocolate 2: Fifty Shades of Chocolate"},
+		{Title: "The Catcher in the Pie"},
+		{Title: "The Catcher in the Pie 2"},
+	}).Len()
+
+	if want != got {
+		t.Errorf("want %d, got %d", want, got)
+	}
+}
+
+func TestGetAllTitles(t *testing.T) {
+	want := []string{
+		"Harry Potter and the Philosopher's Stone",
+		"Chocolate 2: Fifty Shades of Chocolate",
+	}
+	got := bookstore.Catalog([]bookstore.Book{
+		{Title: "Harry Potter and the Philosopher's Stone"},
+		{Title: "Chocolate 2: Fifty Shades of Chocolate"},
+	}).GetAllTitles()
+
+	if !cmp.Equal(want, got) {
+		t.Errorf(cmp.Diff(want, got))
+	}
+}
+
+func TestGetUniqueAuthors(t *testing.T) {
+	want := []string{"Ernest Cline", "Andy Weir"}
+	got := bookstore.Catalog([]bookstore.Book{
+		{
+			Title:   "Ready Player One",
+			Authors: []string{"Ernest Cline"},
+		},
+		{
+			Title:   "The Martian",
+			Authors: []string{"Andy Weir"},
+		},
+		{
+			Title:   "Artemis",
+			Authors: []string{"Andy Weir"},
+		},
+	}).GetUniqueAuthors()
+
+	if !cmp.Equal(want, got) {
+		t.Errorf(cmp.Diff(want, got))
 	}
 }
